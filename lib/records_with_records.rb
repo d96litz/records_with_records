@@ -35,7 +35,7 @@ module RecordsWithRecords
     private
 
     def find_reflection(assoc)
-      reflect_on_association(assoc) || raise("association #{assoc} does not exist for #{name}")
+      reflect_on_association(assoc) || raise("Association #{assoc} does not exist for #{name}")
     end
 
     # Returns arel exists node
