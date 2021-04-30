@@ -6,19 +6,21 @@ require_relative 'records_with_records/association'
 
 module RecordsWithRecords
   class Error < StandardError; end
-  # Your code goes here...
-  METHOD_NAME_REGEX = /^(with(out)?)_(\w+)$/.freeze
+  METHOD_NAME_REGEX = /^(where_(not_)?exists)_(\w+)$/.freeze
 
   def self.included(klass)
     klass.extend(ClassMethods)
   end
 
   module ClassMethods
-    def with(assoc, scope = nil)
+
+    # Returns records of included model where +assoc+ exists
+    def where_exists(assoc, scope = nil)
       where(exist(find_reflection(assoc), scope))
     end
 
-    def without(assoc, scope = nil)
+    # Returns records of included model where +assoc+ exists not
+    def where_not_exists(assoc, scope = nil)
       where.not(exist(find_reflection(assoc), scope))
     end
 
