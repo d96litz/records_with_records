@@ -1,7 +1,12 @@
+# frozen_string_literal: true
+
+require_relative "records_with_records/version"
 require 'active_record'
 require_relative 'records_with_records/association'
 
 module RecordsWithRecords
+  class Error < StandardError; end
+  # Your code goes here...
   METHOD_NAME_REGEX = /^(with(out)?)_(\w+)$/.freeze
 
   def self.included(klass)
