@@ -1,3 +1,5 @@
+require File.expand_path('lib/records_with_records/version', __dir__)
+
 Gem::Specification.new do |s|
   s.name        = 'records_with_records'
   s.version     = '0.0.1'
