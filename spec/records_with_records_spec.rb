@@ -3,7 +3,7 @@ def setup_database(name, tables)
     ActiveRecord::Base.establish_connection(
       adapter: 'postgresql',
       username: 'postgres',
-      password: 'dario'
+      password: 'postgres'
     )
 
     ActiveRecord::Schema.define do
