@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    records_with_records (0.1.1)
+    records_with_records (0.2.0)
 
 GEM
   remote: https://rubygems.org/
