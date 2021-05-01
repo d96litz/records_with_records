@@ -1,5 +1,7 @@
 # RecordsWithRecords
 
+**Please consider that this gem is currently in a beta state**
+
 This gem aims to simplify exists queries
 
 ## Installation
