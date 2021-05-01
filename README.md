@@ -57,7 +57,8 @@ class User < ActiveRecord::Base
   has_many :pending_messages, -> { where(messages: {received_at: nil}) }, class_name: 'Message', foreign_key: :receiver_id
 end
 
-
+User.where_exists(:pending_messages)
+=> SELECT "users".* FROM "users" WHERE EXISTS (SELECT "messages".* FROM "messages" WHERE "messages"."received_at" IS NULL AND ("messages"."receiver_id" = "users"."id"))
 ```
 
 ## Caveats
