@@ -62,7 +62,7 @@ User.where_exists(:pending_messages)
 ```
 
 ## Caveats
-Querying on the existance of `belongs_to` associations is currently not possible.
+Querying on the existence of `belongs_to` associations is currently not possible.
 
 
 ## Development
