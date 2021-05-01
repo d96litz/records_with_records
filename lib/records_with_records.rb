@@ -15,13 +15,13 @@ module RecordsWithRecords
   module ClassMethods
 
     # Returns records of included model where +assoc+ exists
-    def where_exists(assoc, scope = nil)
-      where(exist(find_reflection(assoc), scope))
+    def where_exists(association, scope = nil)
+      where(exist(find_reflection(association), scope))
     end
 
     # Returns records of included model where +assoc+ exists not
-    def where_not_exists(assoc, scope = nil)
-      where.not(exist(find_reflection(assoc), scope))
+    def where_not_exists(association, scope = nil)
+      where.not(exist(find_reflection(association), scope))
     end
 
     def respond_to_missing?(name, *args)

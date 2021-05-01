@@ -20,14 +20,13 @@ class Association
 
   def apply_scopes(scope)
     scope = scope&.instance_exec(&@assoc_scope) if @assoc_scope
-    scope = scope&.instance_exec(&@reflection_scope) if @reflection_scope
+    scope = scope&.instance_exec(&@reflection.scope) if @reflection.scope
     scope
   end
 
   class HasMany < Association
     def scope
-      scp = @reflection.klass.all
-      apply_scopes(scp)
+      apply_scopes(@reflection.klass.all)
     end
 
     def foreign_key

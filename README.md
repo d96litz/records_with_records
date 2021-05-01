@@ -50,6 +50,16 @@ User.where_not_exists(:received_messages, -> { where(received_at: 5.hours.ago..)
 => SELECT "users".* FROM "users" WHERE NOT (EXISTS (SELECT "messages".* FROM "messages" WHERE "messages"."received_at" >= $1 AND ("messages"."receiver_id" = "users"."id"))) [["received_at", "2021-05-01 04:16:42.325804"]]
 ```
 
+### Association scope
+Scopes defined on the association are also applied
+```ruby
+class User < ActiveRecord::Base
+  has_many :pending_messages, -> { where(messages: {received_at: nil}) }, class_name: 'Message', foreign_key: :receiver_id
+end
+
+
+```
+
 ## Caveats
 Querying on the existance of `belongs_to` associations is currently not possible.
 

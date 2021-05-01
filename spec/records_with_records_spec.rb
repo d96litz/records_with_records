@@ -3,7 +3,7 @@ def setup_database(name, tables)
     ActiveRecord::Base.establish_connection(
       adapter: 'postgresql',
       username: 'postgres',
-      password: 'postgres'
+      password: 'dario'
     )
 
     ActiveRecord::Schema.define do
@@ -23,25 +23,32 @@ end
 
 RSpec.describe RecordsWithRecords do
   context 'when included into activerecord base with has_many relation' do
-    setup_database(:records_with_records_test, %i[example_model has_many_records])
+    setup_database(:records_with_records_test, %i[users posts])
 
-    class ExampleModel < ActiveRecord::Base
-      has_many :has_many_records
+    class User < ActiveRecord::Base
+      has_many :posts
+      has_many :read_posts, -> { where(read: true) }, class_name: 'Post'
     end
 
-    class HasManyRecord < ActiveRecord::Base
+    class Post < ActiveRecord::Base
     end
 
-    it 'produces correct sql for with' do
+    it "produces correct sql for 'where_exists'" do
       expect(
-        ExampleModel.with(:has_many_records).to_sql
-      ).to eq(ExampleModel.where(HasManyRecord.where('"has_many_records"."example_model_id" = "example_models"."id"').arel.exists).to_sql)
+        User.where_exists(:posts).to_sql
+      ).to eq(User.where(Post.where('"posts"."user_id" = "users"."id"').arel.exists).to_sql)
     end
 
-    it 'produces correct sql for without' do
+    it "produces correct sql for 'where_not_exists'" do
       expect(
-        ExampleModel.without(:has_many_records).to_sql
-      ).to eq(ExampleModel.where(HasManyRecord.where('"has_many_records"."example_model_id" = "example_models"."id"').arel.exists.not).to_sql)
+        User.where_not_exists(:posts).to_sql
+      ).to eq(User.where(Post.where('"posts"."user_id" = "users"."id"').arel.exists.not).to_sql)
+    end
+
+    it "produces correct sql for 'where_exists' with reflection scope" do
+      expect(
+        User.where_exists(:read_posts).to_sql
+      ).to eq(User.where(Post.where(read: true).where('"posts"."user_id" = "users"."id"').arel.exists).to_sql)
     end
   end
 end
