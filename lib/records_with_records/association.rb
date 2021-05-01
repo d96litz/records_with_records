@@ -56,4 +56,6 @@ class Association
       @reflection.source_reflection
     end
   end
+
+  # TODO: Add belongs_to association
 end

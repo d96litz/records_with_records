@@ -1,8 +1,6 @@
 # RecordsWithRecords
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/records_with_records`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This gem aims to simplify exists queries
 
 ## Installation
 
@@ -21,8 +19,40 @@ Or install it yourself as:
     $ gem install records_with_records
 
 ## Usage
+Assume you have a relation like this
+```ruby
+class User < ActiveRecord::Base
+  has_many :received_messages, class_name: 'Message', foreign_key: :receiver_id
+end
+```
+### Exists
+To get all Users with associated Messages you would write
+```ruby
+User.where(Message.where('receiver_id = users.id').arel.exists)
+=> SELECT "users".* FROM "users" WHERE EXISTS (SELECT "messages".* FROM "messages" WHERE (receiver_id = users.id))
+```
+Instead you can now write
+```ruby
+User.where_exists(:received_messages)
+=> SELECT "users".* FROM "users" WHERE EXISTS (SELECT "messages".* FROM "messages" WHERE ("messages"."receiver_id" = "users"."id"))
+```
+### Not exists
+Querying records without associated records is also possible
+```ruby
+User.where_not_exists(:received_messages)
+=> SELECT "users".* FROM "users" WHERE NOT (EXISTS (SELECT "messages".* FROM "messages" WHERE ("messages"."receiver_id" = "users"."id")))
+```
 
-TODO: Write usage instructions here
+### Additional scope
+You can pass a scope as second argument
+```ruby
+User.where_not_exists(:received_messages, -> { where(received_at: 5.hours.ago..) })
+=> SELECT "users".* FROM "users" WHERE NOT (EXISTS (SELECT "messages".* FROM "messages" WHERE "messages"."received_at" >= $1 AND ("messages"."receiver_id" = "users"."id"))) [["received_at", "2021-05-01 04:16:42.325804"]]
+```
+
+## Caveats
+Querying on the existance of `belongs_to` associations is currently not possible.
+
 
 ## Development
 
